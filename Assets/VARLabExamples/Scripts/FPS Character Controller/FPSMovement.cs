@@ -47,6 +47,8 @@ namespace TigerTail.FPSController
         [Range(0.1f, 20f)]
         [SerializeField] private float moveSpeed = 10f;
 
+        private float sprintSpeed;
+
         [Tooltip("Force of the player's jump.")]
         [Range(4f, 10f)]
         [SerializeField] private float jumpForce = 6f;
@@ -80,6 +82,7 @@ namespace TigerTail.FPSController
         {
             cc = GetComponent<CapsuleCollider>();
             rb = GetComponent<Rigidbody>();
+            sprintSpeed = moveSpeed * 2f;
         }
 
         private void Update()
@@ -176,6 +179,7 @@ namespace TigerTail.FPSController
                 moveVelocity += transform.right;
             }
 
+
             if (HasAnyState(State.Immobilized))
                 moveVelocity = Vector3.zero;
 
@@ -184,6 +188,9 @@ namespace TigerTail.FPSController
             // Going forward/back and left/right at the same time creates a right triangle with magnitude sqrt(2).
             // Normalizing this makes you move at the same speed regardless of input combination.
             moveVelocity = moveVelocity.normalized;
+
+            if(Input.GetKey(KeyCode.LeftShift))
+                return moveVelocity * sprintSpeed;
 
             return moveVelocity * moveSpeed;
         }
